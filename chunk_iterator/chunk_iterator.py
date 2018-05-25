@@ -1,6 +1,6 @@
 from __future__ import division
 import math
-from chunk import Chunk
+from .chunk import Chunk
 
 class ChunkIterator:
     def __init__(self, volume_bbox, chunk_dim):
@@ -36,9 +36,12 @@ class ChunkIterator:
     def __iter__(self):
         return self
 
-    def next(self):
+    def __next__(self):
         if len(self._chunks) == 0:
             raise StopIteration
         c = self._chunks.pop(0)
         self._chunks += c.children()
         return c
+
+    def next(self):
+        return self.__next__()

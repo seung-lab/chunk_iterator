@@ -1,5 +1,5 @@
 from __future__ import division
-import bbox
+from . import bbox
 
 class Chunk:
     def __init__(self, volume, mip, coord):
@@ -32,7 +32,7 @@ class Chunk:
         return False
 
     def print_chunk_info(self):
-        print "mip level: ", self._mip, ", coord: ", self._coord, ", bbox: ", self.data_bbox(), ", boundary: ", self.boundary_flags()
+        print("mip level: ", self._mip, ", coord: ", self._coord, ", bbox: ", self.data_bbox(), ", boundary: ", self.boundary_flags())
 
     def possible_children(self):
         c = []
@@ -48,7 +48,7 @@ class Chunk:
             return []
 
         if not self.has_data():
-            print "empty chunk"
+            print("empty chunk")
             return []
 
         return [i for i in self.possible_children().values() if i.has_data()]
