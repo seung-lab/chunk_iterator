@@ -43,6 +43,15 @@ class Chunk:
 
         return c
 
+    def possible_neighbours(self):
+        c = []
+
+        x, y, z= self._coord
+
+        c = {"_".join([str(i),str(j),str(k)]): Chunk(self._volume, self._mip, [x+i,y+j,z+k]) for i in range(-1,2,1) for j in range(-1,2,1) for k in range(-1,2,1)}
+
+        return c
+
     def children(self):
         if self._mip == 0:
             return []
@@ -52,6 +61,16 @@ class Chunk:
             return []
 
         return [i for i in self.possible_children().values() if i.has_data()]
+
+    def neighbours(self):
+        if self._mip == self._volume.top_mip_level():
+            return []
+
+        if not self.has_data():
+            print("empty chunk")
+            return []
+
+        return [i for i in self.possible_neighbours().values() if i.has_data()]
 
     def boundary_flags(self):
         flags = [0,0,0,0,0,0]
