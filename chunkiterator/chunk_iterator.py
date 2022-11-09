@@ -1,4 +1,5 @@
 import math
+from collections import deque
 from .chunk import Chunk
 
 class ChunkIterator:
@@ -8,7 +9,7 @@ class ChunkIterator:
         self._data_dim = [volume_bbox[i+3]-volume_bbox[i] for i in range(3)]
         dim_in_chunks = self.mip_level_data_dim_in_chunks(0)
         self._top_mip_level = int(math.ceil(math.log(max(dim_in_chunks))/math.log(2)))
-        self._chunks = [Chunk(self, self._top_mip_level, [0,0,0])]
+        self._chunks = deque([Chunk(self, self._top_mip_level, [0,0,0])])
         self._target = [self._top_mip_level, 0, 0, 0]
         self._started = False
         if start_from:
@@ -48,7 +49,7 @@ class ChunkIterator:
             c = self._chunks[0]
             if c.mip_level() != self._target[0]:
                 self._chunks += c.children()
-                self._chunks.pop(0)
+                self._chunks.popleft()
                 continue
 
             for cc in self._chunks:
@@ -58,10 +59,10 @@ class ChunkIterator:
                     self._started = True
                     break
             if self._started:
-                self._chunks = c.children()
+                self._chunks = deque(c.children())
                 return c
 
-        c = self._chunks.pop(0)
+        c = self._chunks.popleft()
         self._chunks += c.children()
         return c
 
